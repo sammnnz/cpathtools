@@ -1,0 +1,118 @@
+{
+    "version": "2.0.0",
+    "windows": { // https://code.visualstudio.com/docs/editor/tasks#_common-questions
+        "options": {
+            "shell": {
+                "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                "args": [
+                    "--login",
+                    "-i",
+                    "-c",
+                ]
+            },
+        }
+    },
+    "tasks": [
+        {
+            "label": "Build_CPathTools",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "build",
+                "install_directory=`pwd`/tests"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for build CPathTools lib."
+        },
+        {
+            "label": "Test_CPathTools",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "test",
+                "install_directory=`pwd`/tests"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for debug and tests.",
+            "dependsOn": [
+                "Build_CPathTools"
+            ]
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for clean after build and tests."
+        },
+        {
+            "label": "Build current file",
+            "type": "shell",
+            "windows": {
+                "command": "gcc",
+                "args": [
+                    "-fdiagnostics-color=always",
+                    "-g",
+                    "${file}",
+                    "-o",
+                    "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                ],
+            },
+            "command": "gcc",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for build current file."
+        },
+    ],
+}
