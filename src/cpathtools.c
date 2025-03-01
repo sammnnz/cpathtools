@@ -5,11 +5,11 @@
 #include "cpathtools.h"
 
 #define __UTF8INVERSESLASH__ 92 // Equal \ in utf8
-#define __UTF8SLASH__ 47        // Equal / in utf8
-#define __UTF8SPACE__ 32        // Equal space in utf8
+#define __UTF8SLASH__        47 // Equal / in utf8
+#define __UTF8SPACE__        32 // Equal space in utf8
 
 /**
- * Return pointer on __str without spaces in the beginig
+ * Return pointer on `__str` without spaces in the beginig
  *
  * @warning NOT SAFE. FOR INTERNAL USE ONLY.
  */
@@ -20,15 +20,9 @@ static char *__skipstartspaces(char *__str)
         return __str;
     }
 
-    while (1)
+    while (*__str == __UTF8SPACE__)
     {
-        if (*__str == __UTF8SPACE__)
-        {
-            ++__str;
-            continue;
-        }
-
-        break;
+        ++__str;
     }
 
     return __str;
@@ -40,11 +34,11 @@ static char *__skipstartspaces(char *__str)
   * Used to get parent paths.
   *
   * @param __path Any string (expected string should be similar to path for any platform).
-  * @param __depth Integer (long long) indicating the slash index.
-  * @return String (part of __path) up to the slash pointed to by the index.
+  * @param __depth Integer (`long long`) indicating the slash index.
+  * @return String (part of `__path`) up to the slash pointed to by the index.
   In this case, allocated memory for return value;
-  NULL if an empty string (or NULL) is passed or in case of a memory allocation error.
-  * @warning Be careful, may be memory leak (see below).
+  `NULL` if an empty string (or `NULL`) is passed or in case of a memory allocation error.
+  * @warning Be careful, may be memory leak: after use `GetPath` we should call `free()`.
   */
 char *GetPath(char *__path, long long __depth)
 {
