@@ -8,18 +8,19 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 CC := gcc
 
-INCDIRS    := "."
-INCFLAGS   := $(addprefix -I,$(INCDIRS))
-CDEBUGFLAG := -g3 -O0
-CFLAGS     := -Wall -Wextra -Wpedantic -Wshadow -Wformat=2 -Wcast-align \
--Wconversion -Wsign-conversion -Wnull-dereference -std=c99 -pedantic \
-$(INCFLAGS) -DCPATHTOOLSEXPORT
+INCDIRS     := . "$(shell echo `pwd`/../src)"
+INCFLAGS    := $(addprefix -I,$(INCDIRS))
+# https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/Option-Summary.html
+CFLAGS      := -Wall -Wextra -Wpedantic -Wshadow -Wformat=2 -Wcast-align \
+-Wconversion -Wsign-conversion -Wnull-dereference -fdiagnostics-color=always \
+-std=c99 -pedantic -O2 $(INCFLAGS)
 
 LIBDIRS  = "$$LIBGCC_DIRECTORY" "$(install_directory)"
 LDFLAGS := $(addprefix -L,$(LIBDIRS))
-LDFLAGS += -lcheck -lcpathtools -DCPATHTOOLSEXPORT
+LDFLAGS += -lcheck -lcpathtools
 
 # Inputs (default values)
+CDEBUGFLAGS := -g3 -O0
 install_directory = .
 
 $(BUILD_DIR)/$(TARGET): $(OBJS)
@@ -28,7 +29,7 @@ $(BUILD_DIR)/$(TARGET): $(OBJS)
 
 $(BUILD_DIR)/%.c.o:	%.c
 	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CDEBUGFLAG) -c $< -o $@
+	$(CC) $(CFLAGS) $(CDEBUGFLAGS) -c $< -o $@
 
 
 .PHONY: clean
