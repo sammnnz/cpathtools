@@ -9,8 +9,8 @@ export LIB_EXT
 export LIBGCC_DIRECTORY
 
 # Inputs (default values)
-install_directory := $(shell \
-. `pwd`/sh/envs.sh; printenv CPATHTOOLS_ROOT_DIRECTORY)
+debug := 0
+install_directory := $(shell pwd)
 
 
 .PHONY: all clean default add_to_env build test
@@ -23,7 +23,7 @@ add_to_env:
 
 build:
 	cd src && pwd; \
-	make -f Makefile install_directory=$(install_directory);
+	make -f Makefile install_directory=$(install_directory) debug=$(debug);
 
 test:
 	cd tests && pwd; \
