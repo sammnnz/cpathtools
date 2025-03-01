@@ -14,14 +14,15 @@
     },
     "tasks": [
         {
-            "label": "Build_CPathTools",
+            "label": "Build_CPathTools_debug",
             "type": "shell",
             "command": "make",
             "args": [
                 "-f",
                 "Makefile",
                 "build",
-                "install_directory=`pwd`/tests"
+                "install_directory=`pwd`/tests",
+                "debug=1"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -57,7 +58,7 @@
             },
             "detail": "Task for debug and tests.",
             "dependsOn": [
-                "Build_CPathTools"
+                "Build_CPathTools_debug"
             ]
         },
         {
