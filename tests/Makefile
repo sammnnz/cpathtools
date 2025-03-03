@@ -11,16 +11,16 @@ CC := gcc
 INCDIRS     := . "$(shell echo `pwd`/../src)"
 INCFLAGS    := $(addprefix -I,$(INCDIRS))
 # https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/Option-Summary.html
+CDEBUGFLAGS := -g3 -O0
 CFLAGS      := -Wall -Wextra -Wpedantic -Wshadow -Wformat=2 -Wcast-align \
 -Wconversion -Wsign-conversion -Wnull-dereference -fdiagnostics-color=always \
--std=c99 -pedantic -O2 $(INCFLAGS)
+-std=c99 -pedantic $(INCFLAGS)
 
 LIBDIRS  = "$$LIBGCC_DIRECTORY" "$(install_directory)"
 LDFLAGS := $(addprefix -L,$(LIBDIRS))
 LDFLAGS += -lcheck -lcpathtools
 
 # Inputs (default values)
-CDEBUGFLAGS := -g3 -O0
 install_directory = .
 
 $(BUILD_DIR)/$(TARGET): $(OBJS)

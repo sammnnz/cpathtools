@@ -9,7 +9,8 @@ export LIB_EXT
 export LIBGCC_DIRECTORY
 
 # Inputs (default values)
-debug := 0
+coverage          := 0
+debug             := 0
 install_directory := $(shell pwd)
 
 
@@ -23,7 +24,7 @@ add_to_env:
 
 build:
 	cd src && pwd; \
-	make -f Makefile install_directory=$(install_directory) debug=$(debug);
+	make -f Makefile coverage=$(coverage) debug=$(debug) install_directory=$(install_directory);
 
 test:
 	cd tests && pwd; \
