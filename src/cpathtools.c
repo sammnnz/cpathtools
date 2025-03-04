@@ -13,7 +13,7 @@
  *
  * @warning NOT SAFE. FOR INTERNAL USE ONLY.
  */
-static char *__skipstartspaces(char *__str)
+static char *__skipstartspaces(char const *__str)
 {
     if (!strchr(__str, __UTF8SPACE__))
     {
@@ -40,7 +40,7 @@ static char *__skipstartspaces(char *__str)
   `NULL` if an empty string (or `NULL`) is passed or in case of a memory allocation error.
   * @warning Be careful, may be memory leak: after use `GetPath` we should call `free()`.
   */
-char *GetPath(char *__path, long long __depth)
+char *GetPath(char const *__path, long long const __depth)
 {
     size_t slash_pos, slashs_count;
     char *path;
@@ -52,7 +52,7 @@ char *GetPath(char *__path, long long __depth)
         (__path && !*__path))
     {
         fprintf(stderr, "WARNING: Invalid argument \'__path\' in %s function.\
-            \n%s must not be NULL or have zero length.",
+            \n%s must not be NULL or have zero length.\n",
                 __func__, __path);
         return NULL;
     }
@@ -62,7 +62,7 @@ char *GetPath(char *__path, long long __depth)
         !strchr(__path, __UTF8INVERSESLASH__))
     {
         fprintf(stderr, "WARNING: Invalid argument \'__path\' in %s function.\
-            \n%s is not path.",
+            \n%s is not path.\n",
                 __func__, __path);
         return NULL;
     }
@@ -87,7 +87,7 @@ char *GetPath(char *__path, long long __depth)
     slashs = (size_t *)malloc(sizeof(size_t));
     if (!slashs)
     {
-        fprintf(stderr, "ERROR: Malloc failed in %s function.", __func__);
+        fprintf(stderr, "ERROR: Malloc failed in %s function.\n", __func__);
         return NULL;
     }
     while (*path)
@@ -135,7 +135,7 @@ char *GetPath(char *__path, long long __depth)
         if (!tmp_slashs)
         {
             free(slashs);
-            fprintf(stderr, "ERROR: Realloc failed in %s function.", __func__);
+            fprintf(stderr, "ERROR: Realloc failed in %s function.\n", __func__);
             return NULL;
         }
 
@@ -159,7 +159,7 @@ char *GetPath(char *__path, long long __depth)
     { // 2^63 - 1
         free(slashs);
         fprintf(stderr, "ERROR: Too much slashes in '__path' argument from %s function.\
-                 Slashes must not be more than 2^63 - 1",
+                 Slashes must not be more than 2^63 - 1.\n",
                 __func__);
         return NULL;
     }
@@ -195,7 +195,7 @@ finally:
     result = (char *)calloc(slash_pos + 1, sizeof(char));
     if (!result)
     {
-        fprintf(stderr, "ERROR: Malloc failed in %s function.", __func__);
+        fprintf(stderr, "ERROR: Malloc failed in %s function.\n", __func__);
         return NULL;
     }
 
