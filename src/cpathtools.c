@@ -13,7 +13,7 @@
  *
  * @warning NOT SAFE. FOR INTERNAL USE ONLY.
  */
-static char *__skipstartspaces(char const *__str)
+static char const *__skipstartspaces(char const *__str)
 {
     if (!strchr(__str, __UTF8SPACE__))
     {
@@ -43,7 +43,7 @@ static char *__skipstartspaces(char const *__str)
 char *GetPath(char const *__path, long long const __depth)
 {
     size_t slash_pos, slashs_count;
-    char *path;
+    char const *path;
     char *result;
     size_t *slashs;
 
@@ -76,14 +76,14 @@ char *GetPath(char const *__path, long long const __depth)
         // return path;
     }
 
-    slash_pos = path - __path;
+    slash_pos = (size_t)(path - __path);
     if (*path == __UTF8SLASH__ || *path == __UTF8INVERSESLASH__)
     {
         ++path;
         ++slash_pos;
     }
 
-    slashs_count = (size_t)0;
+    slashs_count = 0;
     slashs = (size_t *)malloc(sizeof(size_t));
     if (!slashs)
     {
@@ -98,29 +98,29 @@ char *GetPath(char const *__path, long long const __depth)
         {
             if (sl > isl)
             {
-                slash_pos += isl - path;
+                slash_pos += (size_t)(isl - path);
                 path = isl;
             }
             else
             {
-                slash_pos += sl - path;
+                slash_pos += (size_t)(sl - path);
                 path = sl;
             }
         }
         else if (sl != NULL)
         {
-            slash_pos += sl - path;
+            slash_pos += (size_t)(sl - path);
             path = sl;
         }
         else if (isl != NULL)
         {
-            slash_pos += isl - path;
+            slash_pos += (size_t)(isl - path);
             path = isl;
         }
         else
         {
-            char *tmp_path = __skipstartspaces(path);
-            if (strlen(__path) == slash_pos + (tmp_path - path))
+            char const *tmp_path = __skipstartspaces(path);
+            if (strlen(__path) == slash_pos + (size_t)(tmp_path - path))
             { // Cases: '  /  ', '/.../.../   '
                 slashs_count = slashs_count ? slashs_count - 1 : slashs_count;
             }
