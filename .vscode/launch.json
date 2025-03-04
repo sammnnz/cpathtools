@@ -26,7 +26,7 @@
                 }
             ],
             "preLaunchTask": "Test_CPathTools",
-            "postDebugTask": "Clean"
+            "postDebugTask": "Post_Task"
         },
     ],
 }

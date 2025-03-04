@@ -22,7 +22,8 @@
                 "Makefile",
                 "build",
                 "install_directory=`pwd`/tests",
-                "debug=1"
+                "debug=1",
+                "coverage=1"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -62,6 +63,26 @@
             ]
         },
         {
+            "label": "Coverage_Report",
+            "type": "shell",
+            "command": "gcov",
+            "args": [
+                "-b",
+                "cpathtools.c"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/build"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for create coverage report with gcov."
+        },
+        {
             "label": "Clean",
             "type": "shell",
             "command": "make",
@@ -81,6 +102,26 @@
                 "isDefault": false
             },
             "detail": "Task for clean after build and tests."
+        },
+        {
+            "label": "Post_Task",
+            "type": "shell",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Post-Task for print coverage report and clean.",
+            "dependsOn":[
+                "Coverage_Report",
+                "Clean"
+            ]
         },
         {
             "label": "Build current file",
