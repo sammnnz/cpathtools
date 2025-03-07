@@ -1,37 +1,44 @@
-__OS 			 := $(shell \
-. `pwd`/sh/envs.sh; printenv __OS)
-LIB_EXT 		 := $(shell \
-. `pwd`/sh/envs.sh; printenv LIB_EXT)
-LIBGCC_DIRECTORY := $(shell \
-. `pwd`/sh/envs.sh; printenv LIBGCC_DIRECTORY)
-export __OS
-export LIB_EXT
-export LIBGCC_DIRECTORY
+# main makefile
+#
+#	@File:      Makefile
+#	@Author:    Sam.Nazarov
+
+# https://www.opennet.ru/docs/RUS/coding_standard/standard-5.html
+SHELL=/bin/bash
+$(shell ./sh/_env.sh `pwd`)
+include _env
+export _OS
+export LIB_SUFFIX
 
 # Inputs (default values)
-coverage          := 0
-debug             := 0
-install_directory := $(shell pwd)
+coverage          = 0
+debug             = 0
+install_directory = $(shell pwd)
+export coverage
+export debug
+export install_directory
 
-
-.PHONY: all clean default add_to_env build test
+.PHONY: all default build test clean debug
 all: default
 
 default: build test clean
 
-add_to_env:
-	. `pwd`/sh/reg.sh
-
 build:
 	cd src && pwd; \
-	make -f Makefile coverage=$(coverage) debug=$(debug) install_directory=$(install_directory);
+	"$(MAKE)" -f Makefile
 
 test:
 	cd tests && pwd; \
-	make -f Makefile install_directory=$(install_directory);
+	"$(MAKE)" -f Makefile
 
 clean:
 	cd src && pwd; \
-	make -f Makefile clean;
+	"$(MAKE)" -f Makefile clean;
 	cd tests && pwd; \
-	make -f Makefile clean;
+	"$(MAKE)" -f Makefile clean;
+	rm -rf $(install_directory)/check_cpathtools
+	rm -rf _env;
+
+debug:
+	echo os: $(_OS);\
+	echo ext: $(LIB_SUFFIX);
