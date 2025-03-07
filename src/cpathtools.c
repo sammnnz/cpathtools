@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "cpathtools.h"
 
@@ -73,7 +74,6 @@ char *GetPath(char const *__path, long long const __depth)
     {
         slash_pos = strlen(__path);
         goto finally;
-        // return path;
     }
 
     slash_pos = (size_t)(path - __path);
@@ -141,8 +141,8 @@ char *GetPath(char const *__path, long long const __depth)
 
         slashs = tmp_slashs;
         slashs[slashs_count - 1] = slash_pos;
-        if (*path == '\0')
-        { // if true then go out from loop
+        if (*path == '\0') // if true then go out from loop
+        {
             --slashs_count;
         }
     };
@@ -152,11 +152,10 @@ char *GetPath(char const *__path, long long const __depth)
         free(slashs);
         slash_pos = strlen(__path);
         goto finally;
-        // return __path;
     }
 
-    if (slashs_count > 0x7fffffffffffffff)
-    { // 2^63 - 1
+    if (slashs_count > LLONG_MAX) // 2^63 - 1
+    {
         free(slashs);
         fprintf(stderr, "ERROR: Too much slashes in '__path' argument from %s function.\
                  Slashes must not be more than 2^63 - 1.\n",
@@ -164,27 +163,21 @@ char *GetPath(char const *__path, long long const __depth)
         return NULL;
     }
 
-    ++slashs_count; // x = slashs_count >= 2
-    if (__depth >= (long long)slashs_count)
-    { // __depth >= x
+    ++slashs_count;                              // x = slashs_count >= 2
+    if (__depth >= (long long)slashs_count)      // __depth >= x
+    {
         slash_pos = strlen(__path);
-        // return __path;
     }
-    else if (__depth > 0)
-    { // x > __depth > 0
+    else if (__depth > 0)                        // x > __depth > 0
+    {
         slash_pos = *(slashs + __depth - 1);
     }
-    else if (-__depth < (long long)slashs_count)
-    { // 0 > __depth > -x
+    else if (-__depth < (long long)slashs_count) // 0 > __depth > -x
+    {
         slash_pos = *(slashs + slashs_count + __depth - 1);
     }
-    // else if (-__depth >= (long long)slashs_count) { // __depth = x
-    //     slash_pos = *slashs;
-    // }
     else
-    { // -x >= __depth
-        /*free(slashs);
-        return NULL;*/
+    {
         slash_pos = *slashs;
     }
 
