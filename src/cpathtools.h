@@ -31,7 +31,7 @@ extern C
   #endif
 #endif
 
-DLL_PUBLIC(char *) GetPath(char *__path, long long __depth);
+DLL_PUBLIC(char *) GetPath(char const *__path, long long const __depth);
 
 #ifdef __cplusplus
 }

@@ -456,3 +456,8 @@ FodyWeavers.xsd
 
 # Custom
 .env
+
+# Gcov
+*.gcno
+*.gcda
+*.gcov

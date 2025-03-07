@@ -1,4 +1,10 @@
-TARGET := cpathtools.$$LIB_EXT
+# this makefile must not be included directly
+#
+#	@File:      Makefile
+#	@Author:    Sam.Nazarov
+
+SHELL   = /bin/bash
+TARGET := libcpathtools.$(LIB_SUFFIX)
 
 BUILD_DIR := ./build
 SRC_DIRS  := 
@@ -8,30 +14,28 @@ OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)
 
 CC := gcc
 
-INCDIRS     := .
-INCFLAGS    := $(addprefix -I,$(INCDIRS))
-CDEBUGFLAGS = $(shell if [ $(debug) == 1 ]; then echo \
+INCDIRS    	:= .
+INCFLAGS   	:= $(addprefix -I,$(INCDIRS))
+CDEBUGFLAGS := $(shell if [[ $(debug) == 1 ]]; then echo \
 -g3 -O0 \
+; else echo ; fi)
+CDLLFLAGS   := $(shell if [[ $(_OS) == win ]]; then echo \
+-DBUILDING_DLL \
 ; else echo ; fi)
 # https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/Option-Summary.html
 CFLAGS 	    := -Wall -Wextra -Wpedantic -Wshadow -Wformat=2 -Wcast-align \
 -Wconversion -Wsign-conversion -Wnull-dereference -fdiagnostics-color=always \
--fvisibility=hidden -std=c99 -pedantic -fPIC -O2 $(INCFLAGS) -DBUILDING_DLL
-CGCOVFLAGS  = $(shell if [ $(coverage) == 1 ]; then echo \
--fprofile-arcs -ftest-coverage -fprofile-abs-path -O0\
+-fvisibility=hidden -std=c99 -pedantic -fPIC -O2 $(INCFLAGS) $(CDLLFLAGS)
+CGCOVFLAGS   = $(shell if [[ $(coverage) == 1 ]]; then echo \
+-fprofile-arcs -ftest-coverage -fprofile-abs-path -O0 \
 ; else echo ; fi)
 
-LIBDIRS    := 
-LDFLAGS    := 
-LDFLAGS    += -shared
-LDGCOVFLAGS = $(shell if [ $(coverage) == 1 ]; then echo \
+LIBDIRS    	:= 
+LDFLAGS    	:= 
+LDFLAGS    	+= -shared
+LDGCOVFLAGS := $(shell if [[ $(coverage) == 1 ]]; then echo \
 --coverage \
 ; else echo ; fi)
-
-# Inputs (default values)
-coverage           = 0
-debug              = 0
-install_directory := .
 
 $(BUILD_DIR)/$(TARGET): $(OBJS)
 	mkdir -p $(dir $@)
