@@ -1,0 +1,92 @@
+name: Tests
+
+on:
+  push:
+  
+  workflow_dispatch:
+
+jobs:
+  test-ub:
+    runs-on: ${{matrix.os}}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Check OS
+        if: ${{ ! startsWith(matrix.os, 'ubuntu') }}
+        run: |
+          echo Ubuntu OS is required!
+          exit 1
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get install check
+      - name: Check gcc, gcov, make
+        run: |
+          gcc --version; gcov --version; make --version;
+      - name: Build cpathtools
+        run: |
+          make -f Makefile debug
+          make -f Makefile build coverage=1 install_directory=`pwd`/tests
+      - name: Test cpathtools and coverage report
+        run: |
+          make -f Makefile test install_directory=`pwd`/tests
+          ./tests/check_cpathtools
+          cd src/build && gcov -b cpathtools.c
+        env:
+          LD_LIBRARY_PATH: ${{github.workspace}}/tests
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          gcov_include: ${{github.workspace}}/srs/build/cpathtools.c
+          fail_ci_if_error: true
+          flags: gcc-${{matrix.os}}
+          name: unittests
+          slug: sammnnz/cpathtools
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+
+  test-win:
+    runs-on: ${{matrix.os}}
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        include:
+          - os: windows-latest
+            sys: mingw64
+            sys-long: mingw-w64
+            env: x86_64
+
+    steps:
+      - name: Install dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          platform-check-severity: fatal
+          msystem: ${{matrix.sys}}
+          install: >-
+            ${{matrix.sys-long}}-${{matrix.env}}-make
+            ${{matrix.sys-long}}-${{matrix.env}}-gcc
+            ${{matrix.sys-long}}-${{matrix.env}}-check
+      - uses: actions/checkout@v3
+      - name: Check gcc, gcov, make
+        run: |
+          gcc --version; gcov --version; mingw32-make --version;
+      - name: Build cpathtools
+        run: |
+          mingw32-make -f Makefile debug
+          mingw32-make -f Makefile build coverage=1 install_directory=`pwd`/tests
+      - name: Test cpathtools and coverage report
+        run: |
+          mingw32-make -f Makefile test install_directory=`pwd`/tests
+          echo "Tests folder"; ls tests;
+          ./tests/check_cpathtools
+          cd src/build && gcov -b cpathtools.c
