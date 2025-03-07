@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include <check.h>
 #include "cpathtools.h"
 
-#define I (size_t)11
-#define P (size_t)14
-#define L (size_t)25
+#define I (unsigned int)11
+#define P (unsigned int)14
+#define L (unsigned int)25
 
-#define PI (size_t) 3
-#define LI (size_t) 8
+#define PI (unsigned int)3
+#define LI (unsigned int)8
 
-#define MULTI_INDEX_COUNT(bs, bs_len) _get_max_index(bs, bs_len)
-#define MULTI_INDEX_TEST(bs, bs_len, ...) _set_multi_index(bs, bs_len, (size_t)_i, __VA_ARGS__);
+#define MULTI_INDEX_COUNT(bs, bs_len) _get_max_int_index(bs, bs_len)
+#define MULTI_INDEX_TEST(bs, bs_len, ...) _set_int_multi_index(bs, bs_len, (unsigned int)_i, __VA_ARGS__);
 
-static int indices[I] = {0, 1, 2, 3, 4, 5, -1, -2, -3, -4, -5};
+static short indices[I] = {0, 1, 2, 3, 4, 5, -1, -2, -3, -4, -5};
 
 static char paths[P][L] = {
     "  a/b/c", 
@@ -61,49 +62,74 @@ static char answers[P][I][L] = {
 };
 
 /**
- * @warning Not safe! For internal use only.
+ * @warning For internal use only.
  */
-static size_t _get_max_index(size_t const * const bs, size_t bs_len)
+static int _get_max_int_index(unsigned int const * const bs, size_t bs_len)
 {
-    size_t re;
+    int __line;
+    unsigned long long re;
 
     re = 1;
     while(bs_len)
     {
         --bs_len;
-        re *= bs[bs_len];
+        re *= bs[bs_len]; __line = __LINE__;
+        if (re > INT_MAX)
+        {
+            fprintf(stderr, "\n\
+                %s: line %i:\n\
+                WARNING: Buffer overflow in `%s` function. Index may be differ from expected.\n", 
+                __FILE__, __line, __func__);
+            return INT_MAX;
+        }
     }
 
-    return re;
+    return (int)re;
 }
 
 /**
- * @warning Not safe! For internal use only.
+ * @warning For internal use only.
  */
-static void _set_multi_index(size_t const * const bs, size_t bs_len, size_t const ind, ...)
+static int _set_int_multi_index(unsigned int const * const bs, size_t bs_len, unsigned int const ind, ...)
 {
-    size_t div;
+    int __line;
+    unsigned int div, mod;
     va_list args;
 
+    __line = -1;
     div = ind;
     va_start(args, ind);
     while(bs_len)
     {
-        size_t *arg = va_arg(args, size_t*);
+        int *arg = va_arg(args, int*);
         --bs_len;
-        *arg = div % bs[bs_len];
+        mod = div % bs[bs_len]; __line == __LINE__;
+        if (mod > INT_MAX)
+        {
+            va_end(args);
+            fprintf(stderr, "\n\
+                %s: line %i:\n\
+                ERROR: Buffer overflow in `%s` function. Valid index is required.\n", 
+                __FILE__, __line, __func__);
+
+            return -1;
+        }
+
+        *arg =  (int)mod;
         div = div / bs[bs_len];
     }
 
     va_end(args);
+
+    return 0;
 }
 
-static int test_GetPath_valid_imp(size_t const p, size_t const i)
+static int test_GetPath_valid_imp(int const p, int const i)
 {
     char *path;
 
     path = GetPath(paths[p], indices[i]);
-    if (!path && answers[p][i])
+    if (!path)
     {
         ck_abort_msg("\nMemory allocation error in GetPath.\n");
     }
@@ -115,7 +141,7 @@ static int test_GetPath_valid_imp(size_t const p, size_t const i)
     return 0;
 }
 
-static int test_GetPath_invalid_imp(size_t const pi)
+static int test_GetPath_invalid_imp(int const pi)
 {
     char *path;
 
@@ -128,8 +154,8 @@ static int test_GetPath_invalid_imp(size_t const pi)
 
 START_TEST(test_GetPath_valid)
 {
-    size_t p, i;
-    size_t bs[2] = {P,I};
+    int p, i;
+    unsigned int bs[2] = {P,I};
 
     MULTI_INDEX_TEST(bs, 2, &i, &p)
     ck_assert_int_eq(test_GetPath_valid_imp(p, i), 0);
@@ -138,8 +164,8 @@ END_TEST
 
 START_TEST(test_GetPath_invalid)
 {
-    size_t pi;
-    size_t bs[1] = {PI};
+    int pi;
+    unsigned int bs[1] = {PI};
 
     MULTI_INDEX_TEST(bs, 1, &pi)
     ck_assert_int_eq(test_GetPath_invalid_imp(pi), 0);
@@ -148,7 +174,7 @@ END_TEST
 
 Suite *cpathtools_suite(void)
 {
-    size_t bs[2] = {P,I};
+    unsigned int bs[2] = {P,I};
     Suite *s;
     TCase *tc_core;
 
