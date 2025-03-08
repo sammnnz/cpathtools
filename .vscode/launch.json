@@ -1,0 +1,61 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch tests/check_cpathtools (win)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/check_cpathtools.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "envFile": "${workspaceFolder}/.env",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:MI_DEBUGGER_PATH}",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Test CPathTools",
+            "postDebugTask": "Post build/test CPathTools"
+        },
+        {
+            "name": "(gdb) Launch curent file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "envFile": "${workspaceFolder}/.env",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:MI_DEBUGGER_PATH}",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build current file",
+            "postDebugTask": "Post build current file"
+        },
+    ],
+}

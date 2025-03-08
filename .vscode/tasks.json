@@ -1,0 +1,240 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build CPathTools",
+            "type": "shell",
+            "windows": { // https://code.visualstudio.com/docs/editor/tasks#_common-questions
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                        "args": [
+                            "--login",
+                            "-i",
+                            "-c",
+                        ]
+                    },
+                }
+            },
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "build",
+                "install_directory=`pwd`/tests",
+                "debug=1",
+                "coverage=1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for build CPathTools lib."
+        },
+        {
+            "label": "Test CPathTools",
+            "type": "shell",
+            "windows": {
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                        "args": [
+                            "--login",
+                            "-i",
+                            "-c",
+                        ]
+                    },
+                }
+            },
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "test",
+                "install_directory=`pwd`/tests"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for debug and tests.",
+            "dependsOn": [
+                "Build CPathTools"
+            ]
+        },
+        {
+            "label": "Coverage report",
+            "type": "shell",
+            "windows": {
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                        "args": [
+                            "--login",
+                            "-i",
+                            "-c",
+                        ]
+                    },
+                }
+            },
+            "command": "gcov",
+            "args": [
+                "-b",
+                "cpathtools.c"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/build"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for create coverage report with gcov."
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "windows": {
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                        "args": [
+                            "--login",
+                            "-i",
+                            "-c",
+                        ]
+                    },
+                }
+            },
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "clean",
+                "install_directory=`pwd`/tests",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for clean after build and tests.",
+        },
+        {
+            "label": "Post build/test CPathTools",
+            "type": "shell",
+            "windows": {
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                        "args": [
+                            "--login",
+                            "-i",
+                            "-c",
+                        ]
+                    },
+                }
+            },
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Post-Task for print coverage report and clean.",
+            "dependsOn":[
+                "Coverage report",
+                "Clean"
+            ]
+        },
+        {
+            "label": "Build current file",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-Wall",
+                "-Wpedantic",
+                "-g3",
+                "-O0",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task for build current file."
+        },
+        {
+            "label": "Post build current file",
+            "type": "shell",
+            "windows": {
+                "options": {
+                    "shell": {
+                        "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+                        "args": [
+                            "--login",
+                            "-i",
+                            "-c",
+                        ]
+                    },
+                },
+                "args": [
+                "-f",
+                "${fileBasenameNoExtension}.exe",
+                ],
+            },
+            "linux": {
+                "args": [
+                "-f",
+                "${fileBasenameNoExtension}",
+                ],
+            },
+            "command": "rm",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Post-Task for print coverage report and clean."
+        },
+    ],
+}
