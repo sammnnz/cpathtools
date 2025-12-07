@@ -33,12 +33,13 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                echo '📥 Получаем код из GitHub...'
                 // checkout scm
-                git branch: 'main',
-                    credentialsId: 'b9c7e4b7-8379-419f-9e62-fcd30ae92374',
-                    poll: false,
-                    url: 'git@github.com:sammnnz/cpathtools.git'
+                echo '📥 Получаем код из GitHub...'
+                ls -lrta
+                // git branch: 'main',
+                //     credentialsId: 'b9c7e4b7-8379-419f-9e62-fcd30ae92374',
+                //     poll: false,
+                //     url: 'git@github.com:sammnnz/cpathtools.git'
             }
         }
         
