@@ -35,7 +35,9 @@ pipeline {
             steps {
                 // checkout scm
                 echo '📥 Получаем код из GitHub...'
-                ls -lrta
+                sh '''
+                    ls -lrta
+                '''
                 // git branch: 'main',
                 //     credentialsId: 'b9c7e4b7-8379-419f-9e62-fcd30ae92374',
                 //     poll: false,
