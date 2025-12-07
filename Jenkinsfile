@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh '''
                     sudo apt update
-                    sudo apt install check -y
+                    sudo apt install gcc make check -y
                 '''
             }
             post {
